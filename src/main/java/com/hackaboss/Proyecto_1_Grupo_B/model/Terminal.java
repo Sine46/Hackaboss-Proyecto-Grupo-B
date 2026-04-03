@@ -12,6 +12,7 @@ public class Terminal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(mappedBy = "pedido")
+    private String nombre;
+    @OneToMany(mappedBy = "id")
     private List<Pedido> pedidos;
 }

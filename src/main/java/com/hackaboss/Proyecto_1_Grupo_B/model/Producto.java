@@ -21,5 +21,6 @@ public class Producto {
     private Categoria categoria;
     @ManyToMany
     private List<Pedido> pedidos;
+    private boolean disponible;
 
 }
