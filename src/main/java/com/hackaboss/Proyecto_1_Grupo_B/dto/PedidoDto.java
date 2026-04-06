@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PedidoDto {
     private Long id;
-    private List<Producto> productos;
+    private List<ProductoDto> productos;
     private double precioTotal;
     private LocalDateTime horaPedido;
 }
