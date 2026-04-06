@@ -59,6 +59,7 @@ public class PedidoController {
         List<PedidoDto> pedidoDtos = pedidoService.listAll();
         return  ResponseEntity.ok(pedidoDtos);
     }
+
     // listar por estado
     @GetMapping
     public ResponseEntity<List<PedidoDto>> findByEstado(@RequestParam Estado estado) {

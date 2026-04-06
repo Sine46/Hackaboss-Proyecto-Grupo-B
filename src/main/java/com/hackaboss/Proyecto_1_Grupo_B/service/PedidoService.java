@@ -75,7 +75,7 @@ public class PedidoService {
     }
 
     // listar pedidos
-    public List<PedidoDto> listAll() {
+    public List<PedidoDto> findAll() {
         return pedidoRepository.findAll().stream()
                 .map(this::toDto)
                 .toList();
