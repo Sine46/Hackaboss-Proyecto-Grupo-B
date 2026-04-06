@@ -16,13 +16,11 @@ public class TerminalController {
 
     @GetMapping
     public ResponseEntity<List<Terminal>> listarTerminales(){
-        if(service.listarTerminales().isEmpty()) return ResponseEntity.notFound().build();
-        else return ResponseEntity.ok(service.listarTerminales());
+        return ResponseEntity.ok(service.listarTerminales());
     }
 
     @PostMapping
-    public ResponseEntity<Terminal> crearTerminal(@RequestBody String nombre){
-        if (nombre.isBlank() || nombre.equals(null)) return ResponseEntity.badRequest().build();
-        else return ResponseEntity.ok(service.crearTerminal(nombre));
+    public ResponseEntity<Terminal> crearTerminal(@RequestBody Terminal terminal){
+        return ResponseEntity.ok(service.crearTerminal(terminal));
     }
 }

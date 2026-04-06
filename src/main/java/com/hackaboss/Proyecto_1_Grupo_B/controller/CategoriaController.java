@@ -16,13 +16,11 @@ public class CategoriaController {
 
     @GetMapping
     public ResponseEntity<List<Categoria>> listarCategorias(){
-        if (categoriaService.listarCategorias().isEmpty()) return ResponseEntity.noContent().build();
-        else return ResponseEntity.ok(categoriaService.listarCategorias());
+        return ResponseEntity.ok(categoriaService.listarCategorias());
     }
 
     @PostMapping
-    public ResponseEntity<Categoria> crearCategoria(@RequestBody String nombre){
-        if (nombre.isBlank() || nombre.equals(null)) return ResponseEntity.badRequest().build();
-        else return ResponseEntity.ok(categoriaService.crearCategoria(nombre));
+    public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria){
+        return ResponseEntity.ok(categoriaService.crearCategoria(categoria));
     }
 }
