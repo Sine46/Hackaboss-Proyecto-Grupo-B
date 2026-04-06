@@ -17,10 +17,10 @@ public class Producto {
     private Double precio;
     private int stock;
     @ManyToOne
-    @JoinColumn(name="categoria")
+    @JoinColumn(name="categoria_id")
     private Categoria categoria;
     @ManyToMany
     private List<Pedido> pedidos;
-    private boolean disponible;
+    private Boolean activo;
 
 }
