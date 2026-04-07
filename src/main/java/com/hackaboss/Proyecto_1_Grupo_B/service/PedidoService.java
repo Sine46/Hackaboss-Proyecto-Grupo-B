@@ -3,6 +3,10 @@ package com.hackaboss.Proyecto_1_Grupo_B.service;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.CrearPedidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.PedidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoDto;
+import com.hackaboss.Proyecto_1_Grupo_B.exception.DatosNoValidosException;
+import com.hackaboss.Proyecto_1_Grupo_B.exception.PedidoNoEncontradoException;
+import com.hackaboss.Proyecto_1_Grupo_B.exception.ProductoNoEncontradoException;
+import com.hackaboss.Proyecto_1_Grupo_B.exception.TerminalNoEncontradoException;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Estado;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Pedido;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Producto;
@@ -17,6 +21,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class PedidoService {
     @Autowired
