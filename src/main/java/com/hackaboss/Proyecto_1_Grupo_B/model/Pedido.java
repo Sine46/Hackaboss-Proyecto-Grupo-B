@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -15,10 +16,11 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToMany
-    private List<Producto> productos;
+    private List<Producto> productos = new ArrayList<>();
     @ManyToOne
     private Terminal terminal;
     private double precioTotal;
     private LocalDateTime horaPedido;
+    @Enumerated(EnumType.STRING)
     private Estado estado;
 }

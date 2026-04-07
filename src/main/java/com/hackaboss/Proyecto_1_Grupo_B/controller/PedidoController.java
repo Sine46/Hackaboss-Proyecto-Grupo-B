@@ -25,7 +25,7 @@ public class PedidoController {
     }
 
     // añadir producto a pedido
-    @PostMapping("/{pedidoId}/productos")
+    @PostMapping("/{pedidoId}/productos/{productoId}")
     public ResponseEntity<PedidoDto> agregarProducto(@PathVariable Long pedidoId, @PathVariable Long productoId) {
         return ResponseEntity.ok(pedidoService.agregarProducto(pedidoId, productoId));
     }
