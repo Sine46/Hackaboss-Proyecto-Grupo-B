@@ -47,21 +47,22 @@ public class PedidoService {
     }
 
     // Añadir Producto a Pedido
-    public PedidoDto agregarProducto(Long pedidoId, Long productoId) {
+    public PedidoDto agregarProducto(Long pedidoId, List<Long> productos) {
         Pedido pedido = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new PedidoNoEncontradoException(pedidoId));
         if (pedido.getEstado() != Estado.CREADO) {
             throw new DatosNoValidosException("No es posible modificar el pedido en este estado");
         }
-        Producto producto = productoRepository.findById(productoId)
-                .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
-        if (pedido.getProductos().contains(producto)) {
-            throw new DatosNoValidosException("El producto ya está en el pedido");
+        for (Long productoId : productos){
+            Producto producto = productoRepository.findById(productoId)
+                    .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
+            pedido.getProductos().add(producto);
+            producto.setStock(producto.getStock() - 1);
+            pedido.setPrecioTotal(calcularTotal(pedido));
         }
-        pedido.getProductos().add(producto);
-        pedido.setPrecioTotal(calcularTotal(pedido));
 
-        return toDto(pedidoRepository.save(pedido));
+        pedidoRepository.save(pedido);
+        return toDto(pedido);
     }
 
     // Eliminar Producto a pedido
