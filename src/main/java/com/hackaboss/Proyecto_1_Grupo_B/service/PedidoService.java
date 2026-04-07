@@ -123,7 +123,7 @@ public class PedidoService {
                             productoDto.setId(producto.getId());
                             productoDto.setNombre(producto.getNombre());
                             productoDto.setPrecio(producto.getPrecio());
-                            productoDto.setCategoria(producto.getCategoria());
+                            productoDto.setCategoriaNombre(producto.getCategoria().getNombre());
                             return productoDto;
                         })
                         .toList()

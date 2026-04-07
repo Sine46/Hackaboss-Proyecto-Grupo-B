@@ -11,6 +11,6 @@ public class ProductoDto {
     private Long id;
     private String nombre;
     private Double precio;
-    private Categoria categoria;
+    private String categoriaNombre;
     private Boolean activo;
 }

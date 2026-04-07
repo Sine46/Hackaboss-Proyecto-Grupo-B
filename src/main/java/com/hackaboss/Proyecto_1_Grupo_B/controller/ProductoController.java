@@ -28,9 +28,10 @@ public class ProductoController {
 
     }
     @PostMapping
-    public ResponseEntity<Producto> crearProducto (@RequestBody CrearProductoDto productoDto){
+    public ResponseEntity<ProductoDto> crearProducto (@RequestBody CrearProductoDto productoDto){
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(productoService.crearProducto(productoDto));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(productoService.crearProducto(productoDto));
     }
     @PutMapping("/{id}")
     public ResponseEntity<Producto> actualizarProducto (@PathVariable Long id, @RequestBody Producto producto){

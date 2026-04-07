@@ -28,7 +28,7 @@ public class ProductoService {
         dto.setNombre(producto.getNombre());
         dto.setPrecio(producto.getPrecio());
         dto.setActivo(producto.getActivo());
-        dto.setCategoria(producto.getCategoria());
+        dto.setCategoriaNombre(producto.getCategoria().getNombre());
         return dto;
     }
 
@@ -68,7 +68,7 @@ public class ProductoService {
                 .toList();
     }
 
-    public Producto crearProducto(CrearProductoDto productoDto) {
+    public ProductoDto crearProducto(CrearProductoDto productoDto) {
 
         Producto producto = new Producto();
         producto.setNombre(productoDto.getNombre());
@@ -77,7 +77,8 @@ public class ProductoService {
                 .orElseThrow(() -> new DatosNoValidosException("No se ha encontrado la categoria")));
         producto.setActivo(true);
         producto.setStock(0);
-        return producto;
+        Producto saved = productoRepo.save(producto);
+        return toDto(saved);
     }
 
     public Producto actualizarProducto(Long productoId, Producto producto) {
