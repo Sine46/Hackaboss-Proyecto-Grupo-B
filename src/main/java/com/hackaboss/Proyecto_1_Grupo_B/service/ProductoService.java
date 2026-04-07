@@ -29,6 +29,7 @@ public class ProductoService {
         dto.setPrecio(producto.getPrecio());
         dto.setActivo(producto.getActivo());
         dto.setCategoriaNombre(producto.getCategoria().getNombre());
+        dto.setStock(producto.getStock());
         return dto;
     }
 
@@ -71,7 +72,13 @@ public class ProductoService {
     public ProductoDto crearProducto(CrearProductoDto productoDto) {
 
         Producto producto = new Producto();
+        if (productoDto.getNombre() == null || productoDto.getNombre().isBlank()) {
+            throw new DatosNoValidosException("El producto necesita un nombre");
+        }
         producto.setNombre(productoDto.getNombre());
+        if (productoDto.getPrecio() <= 0) {
+            throw new DatosNoValidosException("El precio debe ser mayor que 0");
+        }
         producto.setPrecio(productoDto.getPrecio());
         producto.setCategoria(categoriaRepo.findById(productoDto.getCategoriaId())
                 .orElseThrow(() -> new DatosNoValidosException("No se ha encontrado la categoria")));
@@ -91,6 +98,8 @@ public class ProductoService {
             p.setPedidos(producto.getPedidos());
             return productoRepo.save(p);
         }).orElseThrow(() -> new EntityNotFoundException("No se ha podido encontrar el producto con el id " + productoId));
+
+
 
 
     }
