@@ -4,4 +4,5 @@ import com.hackaboss.Proyecto_1_Grupo_B.model.Terminal;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TerminalRepository extends JpaRepository<Terminal, Long> {
+    boolean existsByNombreIgnoreCase(String nombre);
 }

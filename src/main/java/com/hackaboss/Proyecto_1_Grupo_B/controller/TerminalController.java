@@ -12,15 +12,15 @@ import java.util.List;
 @RequestMapping("/api/terminales")
 public class TerminalController {
     @Autowired
-    private TerminalService service;
+    private TerminalService terminalService;
 
     @GetMapping
     public ResponseEntity<List<Terminal>> listarTerminales(){
-        return ResponseEntity.ok(service.listarTerminales());
+        return ResponseEntity.ok(terminalService.listarTerminales());
     }
 
     @PostMapping
     public ResponseEntity<Terminal> crearTerminal(@RequestBody Terminal terminal){
-        return ResponseEntity.ok(service.crearTerminal(terminal));
+        return ResponseEntity.ok(terminalService.crearTerminal(terminal));
     }
 }

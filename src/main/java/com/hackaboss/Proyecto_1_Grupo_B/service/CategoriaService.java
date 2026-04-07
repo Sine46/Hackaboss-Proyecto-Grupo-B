@@ -20,7 +20,10 @@ public class CategoriaService {
     public Categoria crearCategoria(Categoria categoria) {
         if (categoria.getNombre() == null || categoria.getNombre().isBlank()) {
             throw new DatosNoValidosException("El nombre introducido no puede estar en blanco");
+        }else if (categoriaRepository.existsByNombreIgnoreCase(categoria.getNombre())) {
+            throw new DatosNoValidosException("La categoria ya existe");
+        }else {
+            return categoriaRepository.save(categoria);
         }
-        return categoriaRepository.save(categoria);
     }
 }

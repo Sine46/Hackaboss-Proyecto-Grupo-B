@@ -11,16 +11,19 @@ import java.util.List;
 @Service
 public class TerminalService {
     @Autowired
-    private TerminalRepository repo;
+    private TerminalRepository terminalRepository;
 
     public List<Terminal> listarTerminales() {
-        return repo.findAll();
+        return terminalRepository.findAll();
     }
 
     public Terminal crearTerminal(Terminal terminal) {
         if (terminal.getNombre() == null || terminal.getNombre().isBlank()) {
             throw new DatosNoValidosException("El nombre introducido no puede estar en blanco");
+        }else if(terminalRepository.existsByNombreIgnoreCase(terminal.getNombre())) {
+            throw new DatosNoValidosException("El nombre introducido ya existe");
+        }else {
+            return terminalRepository.save(terminal);
         }
-        return repo.save(terminal);
     }
 }
