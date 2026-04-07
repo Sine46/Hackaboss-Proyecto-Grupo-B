@@ -36,7 +36,7 @@ public class PedidoService {
     // crear pedido
     public PedidoDto crearPedido(CrearPedidoDto dto) {
         Terminal terminal = terminalRepository.findById(dto.getTerminalId())
-                .orElseThrow(() -> new RuntimeException("Terminal no encontrado"));
+                .orElseThrow(() -> new TerminalNoEncontradoException(dto.getTerminalId()));
         Pedido pedido = new Pedido();
         pedido.setTerminal(terminal);
         pedido.setEstado(Estado.CREADO);
@@ -47,52 +47,63 @@ public class PedidoService {
     }
 
     // Añadir Producto a Pedido
-    public PedidoDto anyadirProducto(Long pedidoId, Long productoId) {
-        Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
-        Producto producto = productoRepository.findById(productoId).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+    public PedidoDto agregarProducto(Long pedidoId, Long productoId) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new PedidoNoEncontradoException(pedidoId));
+        if (pedido.getEstado() != Estado.CREADO) {
+            throw new DatosNoValidosException("No es posible modificar el pedido en este estado");
+        }
+        Producto producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
+        if (pedido.getProductos().contains(producto)) {
+            throw new DatosNoValidosException("El producto ya está en el pedido");
+        }
         pedido.getProductos().add(producto);
         pedido.setPrecioTotal(calcularTotal(pedido));
+
         return toDto(pedidoRepository.save(pedido));
     }
 
     // Eliminar Producto a pedido
     public PedidoDto eliminarProducto(Long pedidoId, Long productoId) {
         Pedido pedido = pedidoRepository.findById(pedidoId)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+                .orElseThrow(() -> new PedidoNoEncontradoException(pedidoId));
+        if (pedido.getEstado() != Estado.CREADO) {
+            throw new DatosNoValidosException("No es posible modificar el pedido en este estado");
+        }
         boolean eliminado = pedido.getProductos()
                 .removeIf(producto -> producto.getId().equals(productoId));
         if (!eliminado) {
-            throw new RuntimeException("El producto no está en el pedido");
+            throw new DatosNoValidosException("El producto no está en el pedido");
         }
         pedido.setPrecioTotal(calcularTotal(pedido));
+
         return toDto(pedidoRepository.save(pedido));
     }
 
     // cambiar estado de Pedido
     public PedidoDto cambiarEstado(Long pedidoId, Estado estado) {
-        Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new PedidoNoEncontradoException(pedidoId));
         pedido.setEstado(estado);
         return toDto(pedidoRepository.save(pedido));
     }
 
     // Find by id/codigo
     public PedidoDto findById(Long pedidoId) {
-        Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new PedidoNoEncontradoException(pedidoId));
         return toDto(pedido);
     }
 
     // listar pedidos
-    public List<PedidoDto> findAll() {
-        return pedidoRepository.findAll().stream()
-                .map(this::toDto)
-                .toList();
-    }
+    public List<PedidoDto> getPedidos(Estado estado) {
 
-    // listar por estado
-    public List<PedidoDto> findByEstado(Estado estado) {
-        List<Pedido> pedidos = pedidoRepository.findAll();
+        List<Pedido> pedidos = (estado == null)
+                ? pedidoRepository.findAll()
+                : pedidoRepository.findByEstado(estado);
+
         return pedidos.stream()
-                .filter(p -> p.getEstado() == estado)
                 .sorted(Comparator.comparing(Pedido::getHoraPedido))
                 .map(this::toDto)
                 .toList();

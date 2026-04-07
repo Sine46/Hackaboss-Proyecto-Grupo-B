@@ -26,43 +26,33 @@ public class PedidoController {
 
     // añadir producto a pedido
     @PostMapping("/{pedidoId}/productos")
-    public ResponseEntity<PedidoDto> añadirProducto(@PathVariable Long pedidoId, @RequestParam Long productoId) {
-        PedidoDto pedido = pedidoService.anyadirProducto(pedidoId, productoId);
-        return ResponseEntity.ok(pedido);
+    public ResponseEntity<PedidoDto> agregarProducto(@PathVariable Long pedidoId, @PathVariable Long productoId) {
+        return ResponseEntity.ok(pedidoService.agregarProducto(pedidoId, productoId));
     }
 
     // eliminar producto a pedido
     @DeleteMapping("/{pedidoId}/productos/{productoId}")
     public ResponseEntity<PedidoDto> eliminarProducto(@PathVariable Long pedidoId, @PathVariable Long productoId) {
-        PedidoDto pedido = pedidoService.eliminarProducto(pedidoId, productoId);
-        return ResponseEntity.ok(pedido);
+        return ResponseEntity.ok(pedidoService.eliminarProducto(pedidoId, productoId));
     }
 
     // Cambiar estado del pedido
     @PatchMapping("/{pedidoId}/estado")
     public ResponseEntity<PedidoDto> cambiarEstado(@PathVariable Long pedidoId, @RequestParam Estado estado) {
-        PedidoDto pedido = pedidoService.cambiarEstado(pedidoId,estado);
-        return ResponseEntity.ok(pedido);
+        return ResponseEntity.ok(pedidoService.cambiarEstado(pedidoId, estado)
+        );
     }
 
     // Find by ID/Codigo
     @GetMapping("/{id}")
     public ResponseEntity<PedidoDto> findById(@PathVariable Long id) {
-        PedidoDto pedido = pedidoService.findById(id);
-        return ResponseEntity.ok(pedido);
+        return ResponseEntity.ok(pedidoService.findById(id));
     }
 
-    // listar todos
+    // listar pedidos
     @GetMapping
-    public ResponseEntity<List<PedidoDto>> findAll() {
-        List<PedidoDto> pedidoDtos = pedidoService.findAll();
-        return  ResponseEntity.ok(pedidoDtos);
+    public ResponseEntity<List<PedidoDto>> getPedidos(@RequestParam(required = false) Estado estado) {
+        return ResponseEntity.ok(pedidoService.getPedidos(estado));
     }
 
-    // listar por estado
-    @GetMapping
-    public ResponseEntity<List<PedidoDto>> findByEstado(@RequestParam Estado estado) {
-        List<PedidoDto> pedidoDtos = pedidoService.findByEstado(estado);
-        return  ResponseEntity.ok(pedidoDtos);
-    }
 }
