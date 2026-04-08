@@ -111,7 +111,7 @@ public class PedidoService {
     }
 
     // convertir a DTO
-    private PedidoDto toDto(Pedido pedido) {
+    PedidoDto toDto(Pedido pedido) {
         PedidoDto dto = new PedidoDto();
         dto.setId(pedido.getId());
         dto.setPrecioTotal(pedido.getPrecioTotal());
