@@ -12,6 +12,5 @@ public class ProductoDto {
     private String nombre;
     private Double precio;
     private String categoriaNombre;
-    private Boolean activo;
-    private Integer stock;
+
 }
