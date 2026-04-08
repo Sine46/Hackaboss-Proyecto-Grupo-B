@@ -48,14 +48,16 @@ public class PedidoService {
 
     // Añadir Producto a Pedido
     public PedidoDto agregarProducto(Long pedidoId, List<Long> productos) {
-        Pedido pedido = pedidoRepository.findById(pedidoId)
-                .orElseThrow(() -> new PedidoNoEncontradoException(pedidoId));
+        Pedido pedido = pedidoExiste(pedidoId);
         if (pedido.getEstado() != Estado.CREADO) {
             throw new DatosNoValidosException("No es posible modificar el pedido en este estado");
         }
-        for (Long productoId : productos){
+        if (productos.isEmpty() || productos == null) throw new DatosNoValidosException("La lista de productos no puede estar vacía");
+        for (Long productoId : productos) {
             Producto producto = productoRepository.findById(productoId)
                     .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
+            if (producto.getStock() <= 0)
+                throw new DatosNoValidosException("No hay stock disponible para el producto con id : " + productoId);
             pedido.getProductos().add(producto);
             producto.setStock(producto.getStock() - 1);
             pedido.setPrecioTotal(calcularTotal(pedido));
@@ -67,8 +69,7 @@ public class PedidoService {
 
     // Eliminar Producto a pedido
     public PedidoDto eliminarProducto(Long pedidoId, Long productoId) {
-        Pedido pedido = pedidoRepository.findById(pedidoId)
-                .orElseThrow(() -> new PedidoNoEncontradoException(pedidoId));
+        Pedido pedido = pedidoExiste(pedidoId);
         if (pedido.getEstado() != Estado.CREADO) {
             throw new DatosNoValidosException("No es posible modificar el pedido en este estado");
         }
@@ -84,16 +85,15 @@ public class PedidoService {
 
     // cambiar estado de Pedido
     public PedidoDto cambiarEstado(Long pedidoId, Estado estado) {
-        Pedido pedido = pedidoRepository.findById(pedidoId)
-                .orElseThrow(() -> new PedidoNoEncontradoException(pedidoId));
+        Pedido pedido = pedidoExiste(pedidoId);
+        validarCambioEstado(pedido.getEstado());
         pedido.setEstado(estado);
         return toDto(pedidoRepository.save(pedido));
     }
 
     // Find by id/codigo
     public PedidoDto findById(Long pedidoId) {
-        Pedido pedido = pedidoRepository.findById(pedidoId)
-                .orElseThrow(() -> new PedidoNoEncontradoException(pedidoId));
+        Pedido pedido = pedidoExiste(pedidoId);
         return toDto(pedido);
     }
 
@@ -140,5 +140,19 @@ public class PedidoService {
 
     }
 
+    // validaciones
+    // pedido existente
+    private Pedido pedidoExiste(Long id) {
+        return pedidoRepository.findById(id)
+                .orElseThrow(() -> new PedidoNoEncontradoException(id));
+    }
 
+    // estado
+    private void validarCambioEstado(Estado estado) {
+        if (estado == Estado.FINALIZADO) {
+            throw new DatosNoValidosException("El pedido ya está finalizado");
+        }
+
+
+    }
 }
