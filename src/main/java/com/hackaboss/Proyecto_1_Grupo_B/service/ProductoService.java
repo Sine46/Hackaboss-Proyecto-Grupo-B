@@ -74,6 +74,8 @@ public class ProductoService {
         Producto producto = new Producto();
         if (productoDto.getNombre() == null || productoDto.getNombre().isBlank()) {
             throw new DatosNoValidosException("El producto necesita un nombre");
+        }else if (productoRepo.existsByNombreIgnoreCase(producto.getNombre())){
+            throw new DatosNoValidosException("El producto ya existe");
         }
         producto.setNombre(productoDto.getNombre());
         if (productoDto.getPrecio() <= 0) {
