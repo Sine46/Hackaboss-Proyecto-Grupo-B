@@ -3,13 +3,12 @@ package com.hackaboss.Proyecto_1_Grupo_B.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class ProductoDto {
+public class CategoriaDto {
     private Long id;
     private String nombre;
-    private Double precio;
-    private String categoriaNombre;
-
+    private List<ProductoDto> productosDto;
 }
