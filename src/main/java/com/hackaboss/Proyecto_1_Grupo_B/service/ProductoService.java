@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -27,9 +28,7 @@ public class ProductoService {
         dto.setId(producto.getId());
         dto.setNombre(producto.getNombre());
         dto.setPrecio(producto.getPrecio());
-        dto.setActivo(producto.getActivo());
         dto.setCategoriaNombre(producto.getCategoria().getNombre());
-        dto.setStock(producto.getStock());
         return dto;
     }
 
@@ -69,47 +68,58 @@ public class ProductoService {
                 .toList();
     }
 
-    public ProductoDto crearProducto(CrearProductoDto productoDto) {
+    public Producto crearProducto(CrearProductoDto productoDto) {
 
         Producto producto = new Producto();
         if (productoDto.getNombre() == null || productoDto.getNombre().isBlank()) {
             throw new DatosNoValidosException("El producto necesita un nombre");
-        }else if (productoRepo.existsByNombreIgnoreCase(producto.getNombre())){
+        } else if (productoRepo.existsByNombreIgnoreCase(producto.getNombre())) {
             throw new DatosNoValidosException("El producto ya existe");
         }
         producto.setNombre(productoDto.getNombre());
-        if (productoDto.getPrecio() <= 0) {
+        if (productoDto.getPrecio() < 0) {
             throw new DatosNoValidosException("El precio debe ser mayor que 0");
         }
         producto.setPrecio(productoDto.getPrecio());
         producto.setCategoria(categoriaRepo.findById(productoDto.getCategoriaId())
                 .orElseThrow(() -> new DatosNoValidosException("No se ha encontrado la categoria")));
         producto.setActivo(true);
-        producto.setStock(0);
-        Producto saved = productoRepo.save(producto);
-        return toDto(saved);
+        return productoRepo.save(producto);
+
     }
 
     public Producto actualizarProducto(Long productoId, Producto producto) {
-        return productoRepo.findById(productoId).map(p -> {
-            p.setNombre(producto.getNombre());
-            p.setPrecio(producto.getPrecio());
-            p.setCategoria(producto.getCategoria());
-            p.setStock(producto.getStock());
-            p.setActivo(producto.getActivo());
-            p.setPedidos(producto.getPedidos());
-            return productoRepo.save(p);
-        }).orElseThrow(() -> new EntityNotFoundException("No se ha podido encontrar el producto con el id " + productoId));
-
-
+        Optional<Producto> p = productoRepo.findById(productoId);
+        if (p == null) throw new DatosNoValidosException("El producto con la id " + productoId + " no existe");
+        Producto prod = p.get();
+        if (producto.getNombre() == null || producto.getNombre().isBlank()) {
+            throw new DatosNoValidosException("El producto necesita un nombre");
+        } else if (productoRepo.existsByNombreIgnoreCase(producto.getNombre())) {
+            throw new DatosNoValidosException("El producto ya existe");
+        }
+        prod.setNombre(producto.getNombre());
+        if (producto.getPrecio() < 0) {
+            throw new DatosNoValidosException("El precio debe ser mayor que 0");
+        }
+        prod.setPrecio(producto.getPrecio());
+        prod.setCategoria(producto.getCategoria());
+        if (producto.getStock() < 0) {
+            throw new DatosNoValidosException("El precio debe ser mayor que 0");
+        }
+        prod.setStock(producto.getStock());
+        prod.setActivo(producto.getActivo());
+        prod.setPedidos(producto.getPedidos());
+        return productoRepo.save(prod);
 
 
     }
-    public void desactivar (Long id){
-        productoRepo.findById(id).map(p -> { p.setActivo(false);
-            return productoRepo.save(p); })
-                .orElseThrow(() -> new EntityNotFoundException("No se ha podido encontrar el producto con el id " + id));
-    }
+            public void desactivar (Long id){
+                productoRepo.findById(id).map(p -> {
+                            p.setActivo(false);
+                            return productoRepo.save(p);
+                        })
+                        .orElseThrow(() -> new EntityNotFoundException("No se ha podido encontrar el producto con el id " + id));
+            }
 
 
-}
+        }
