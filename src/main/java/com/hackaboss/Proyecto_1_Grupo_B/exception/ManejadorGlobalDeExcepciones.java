@@ -28,7 +28,7 @@ public class ManejadorGlobalDeExcepciones {
                 .body(Map.of("error", ex.getMessage()));
     }
     @ExceptionHandler(TerminalNoEncontradoException.class)
-    public ResponseEntity<Map<String, String>> manejarTerminalNoEncontrado(ProductoNoEncontradoException ex) {
+    public ResponseEntity<Map<String, String>> manejarTerminalNoEncontrado(TerminalNoEncontradoException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(Map.of("error", ex.getMessage()));

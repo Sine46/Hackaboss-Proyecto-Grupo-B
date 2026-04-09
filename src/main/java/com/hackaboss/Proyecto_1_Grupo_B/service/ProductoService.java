@@ -80,6 +80,7 @@ public class ProductoService {
         producto.setCategoria(categoriaRepo.findById(productoDto.getCategoriaId())
                 .orElseThrow(() -> new DatosNoValidosException("No se ha encontrado la categoria")));
         producto.setActivo(true);
+        producto.setStock(0);
         productoRepo.save(producto);
         return productoMapper.toDto(producto);
 
@@ -100,7 +101,7 @@ public class ProductoService {
         p.setPrecio(producto.getPrecio());
         p.setCategoria(producto.getCategoria());
         if (producto.getStock() < 0) {
-            throw new DatosNoValidosException("El precio debe ser mayor que 0");
+            throw new DatosNoValidosException("El stock debe ser positivo");
         }
         p.setStock(producto.getStock());
         p.setActivo(producto.getActivo());

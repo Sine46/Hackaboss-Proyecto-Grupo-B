@@ -20,6 +20,7 @@ public class Pedido {
     private List<PedidoProducto> pedidoProductos = new ArrayList<>();
 
     @ManyToOne
+    @JoinColumn (name = "terminal_id")
     private Terminal terminal;
 
     private double precioTotal;
