@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -22,7 +23,7 @@ public class Producto {
     private Categoria categoria;
 
     @OneToMany(mappedBy = "producto")
-    private List<PedidoProducto> pedidoProductos;
+    private List<PedidoProducto> pedidoProductos = new ArrayList<>();
 
     private Boolean activo;
 
