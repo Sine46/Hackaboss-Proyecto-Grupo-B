@@ -16,14 +16,14 @@ public class PedidoMapper {
         dto.setPrecioTotal(pedido.getPrecioTotal());
         dto.setHoraPedido(pedido.getHoraPedido());
         dto.setProductos(
-                pedido.getProductos()
+                pedido.getPedidoProductos()
                         .stream()
-                        .map(producto -> {
+                        .map(pedidoProducto -> {
                             ProductoDto productoDto = new ProductoDto();
-                            productoDto.setId(producto.getId());
-                            productoDto.setNombre(producto.getNombre());
-                            productoDto.setPrecio(producto.getPrecio());
-                            productoDto.setCategoriaNombre(producto.getCategoria().getNombre());
+                            productoDto.setId(pedidoProducto.getId());
+                            productoDto.setNombre(pedidoProducto.getProducto().getNombre());
+                            productoDto.setPrecio(pedidoProducto.getProducto().getPrecio());
+                            productoDto.setCategoriaNombre(pedidoProducto.getProducto().getCategoria().getNombre());
                             return productoDto;
                         })
                         .toList()

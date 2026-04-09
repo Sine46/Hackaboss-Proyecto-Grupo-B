@@ -97,7 +97,7 @@ public class ProductoService {
             p.setCategoria(producto.getCategoria());
             p.setStock(producto.getStock());
             p.setActivo(producto.getActivo());
-            p.setPedidos(producto.getPedidos());
+            p.setPedidoProductos(producto.getPedidoProductos());
             return productoRepo.save(p);
         }).orElseThrow(() -> new EntityNotFoundException("No se ha podido encontrar el producto con el id " + productoId));
 

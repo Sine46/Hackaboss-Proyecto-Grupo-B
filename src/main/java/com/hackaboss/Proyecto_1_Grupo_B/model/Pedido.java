@@ -15,12 +15,16 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany
-    private List<Producto> productos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<PedidoProducto> pedidoProductos = new ArrayList<>();
+
     @ManyToOne
     private Terminal terminal;
+
     private double precioTotal;
     private LocalDateTime horaPedido;
+
     @Enumerated(EnumType.STRING)
     private Estado estado;
 }
