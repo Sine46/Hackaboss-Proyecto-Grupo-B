@@ -33,8 +33,8 @@ public class ProductoController {
                 .body(productoService.crearProducto(productoDto));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizarProducto (@PathVariable Long id, @RequestBody Producto producto){
-        return ResponseEntity.ok(productoService.actualizarProducto(id,producto));
+    public ResponseEntity<ProductoDto> actualizarProducto (@PathVariable("id") Long id, @RequestBody CrearProductoDto dto){
+        return ResponseEntity.ok(productoService.actualizarProducto(id,dto));
     }
     @PatchMapping("/{id}/desactivar")
     public ResponseEntity<String> desactivarProducto (@PathVariable Long id){

@@ -5,6 +5,7 @@ import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.DatosNoValidosException;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.ProductoNoEncontradoException;
 import com.hackaboss.Proyecto_1_Grupo_B.mapper.ProductoMapper;
+import com.hackaboss.Proyecto_1_Grupo_B.model.Categoria;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Producto;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.CategoriaRepository;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.ProductoRepository;
@@ -72,13 +73,15 @@ public class ProductoService {
         } else if (productoRepo.existsByNombreIgnoreCase(productoDto.getNombre())) {
             throw new DatosNoValidosException("El producto ya existe");
         }
-        producto.setNombre(productoDto.getNombre());
         if (productoDto.getPrecio() < 0) {
             throw new DatosNoValidosException("El precio debe ser mayor que 0");
         }
-        producto.setPrecio(productoDto.getPrecio());
+
         producto.setCategoria(categoriaRepo.findById(productoDto.getCategoriaId())
                 .orElseThrow(() -> new DatosNoValidosException("No se ha encontrado la categoria")));
+
+        producto.setNombre(productoDto.getNombre());
+        producto.setPrecio(productoDto.getPrecio());
         producto.setActivo(true);
         producto.setStock(0);
         productoRepo.save(producto);
@@ -87,26 +90,36 @@ public class ProductoService {
     }
 
 
-    public Producto actualizarProducto(Long productoId, Producto producto) {
-        Producto p = productoRepo.findById(productoId).orElseThrow(() -> new ProductoNoEncontradoException(productoId));
-        if (producto.getNombre() == null || producto.getNombre().isBlank()) {
+    public ProductoDto actualizarProducto(Long productoId, CrearProductoDto dto) {
+        Producto p = productoRepo.findById(productoId)
+                .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
+
+        Categoria c = categoriaRepo.findById(dto.getCategoriaId())
+                .orElseThrow(()-> new DatosNoValidosException("Categoria no encontrada"));
+
+        if (dto.getNombre() == null || dto.getNombre().isBlank()) {
             throw new DatosNoValidosException("El producto necesita un nombre");
-        } else if (productoRepo.existsByNombreIgnoreCase(producto.getNombre())) {
+        } else if (productoRepo.existsByNombreIgnoreCaseAndIdNot(dto.getNombre(),productoId)) {
             throw new DatosNoValidosException("El producto ya existe");
         }
-        p.setNombre(producto.getNombre());
-        if (producto.getPrecio() < 0) {
+        if (dto.getPrecio() == null || dto.getPrecio() < 0) {
             throw new DatosNoValidosException("El precio debe ser mayor que 0");
         }
-        p.setPrecio(producto.getPrecio());
-        p.setCategoria(producto.getCategoria());
-        if (producto.getStock() < 0) {
+        if (p.getStock() < 0) {                                        //Aqui no necesito hacer validacion null ya que tenemos "int" y es primitivo lo cual nunca es null
             throw new DatosNoValidosException("El stock debe ser positivo");
         }
-        p.setStock(producto.getStock());
-        p.setActivo(producto.getActivo());
-        p.setPedidoProductos(producto.getPedidoProductos());
-        return productoRepo.save(p);
+        if (dto.getCategoriaId() == null) {
+            throw new DatosNoValidosException("categoriaId es obligatorio");
+        }
+
+        p.setNombre(dto.getNombre());
+        p.setPrecio(dto.getPrecio());
+        p.setCategoria(c);
+        p.setStock(p.getStock());
+        p.setActivo(p.getActivo());
+
+        Producto saved = productoRepo.save(p);
+        return productoMapper.toDto(saved);
 
 
     }
