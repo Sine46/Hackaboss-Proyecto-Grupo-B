@@ -1,6 +1,6 @@
 package com.hackaboss.Proyecto_1_Grupo_B.service;
 
-import com.hackaboss.Proyecto_1_Grupo_B.controller.TerminalDto;
+import com.hackaboss.Proyecto_1_Grupo_B.dto.TerminalDto;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.DatosNoValidosException;
 import com.hackaboss.Proyecto_1_Grupo_B.mapper.PedidoMapper;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Terminal;

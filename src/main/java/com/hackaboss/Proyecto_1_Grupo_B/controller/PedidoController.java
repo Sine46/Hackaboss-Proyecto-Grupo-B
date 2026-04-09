@@ -4,7 +4,6 @@ import com.hackaboss.Proyecto_1_Grupo_B.dto.AgregarProductoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.CrearPedidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.PedidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Estado;
-import com.hackaboss.Proyecto_1_Grupo_B.model.Producto;
 import com.hackaboss.Proyecto_1_Grupo_B.service.PedidoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-
-import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -26,7 +22,7 @@ public class PedidoController {
     @PostMapping
     public ResponseEntity<PedidoDto> crearPedido(@RequestBody CrearPedidoDto dto) {
         PedidoDto pedido = pedidoService.crearPedido(dto);
-        return ResponseEntity.status(CREATED).body(pedido);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
     }
 
     // añadir producto a pedido

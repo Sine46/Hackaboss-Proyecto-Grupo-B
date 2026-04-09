@@ -1,6 +1,5 @@
 package com.hackaboss.Proyecto_1_Grupo_B.dto;
 
-import com.hackaboss.Proyecto_1_Grupo_B.model.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

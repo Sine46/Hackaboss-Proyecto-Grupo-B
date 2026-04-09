@@ -1,6 +1,5 @@
-package com.hackaboss.Proyecto_1_Grupo_B.controller;
+package com.hackaboss.Proyecto_1_Grupo_B.dto;
 
-import com.hackaboss.Proyecto_1_Grupo_B.dto.PedidoDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

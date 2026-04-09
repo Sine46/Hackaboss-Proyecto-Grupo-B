@@ -13,6 +13,6 @@ public class Terminal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "terminal")
     private List<Pedido> pedidos;
 }

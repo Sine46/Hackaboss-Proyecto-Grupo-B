@@ -1,5 +1,6 @@
 package com.hackaboss.Proyecto_1_Grupo_B.controller;
 
+import com.hackaboss.Proyecto_1_Grupo_B.dto.CategoriaDto;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Categoria;
 import com.hackaboss.Proyecto_1_Grupo_B.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @GetMapping
-    public ResponseEntity<List<Categoria>> listarCategorias(){
+    public ResponseEntity<List<CategoriaDto>> listarCategorias(){
         return ResponseEntity.ok(categoriaService.listarCategorias());
     }
 
