@@ -15,7 +15,7 @@ public class TerminalController {
     private TerminalService terminalService;
 
     @GetMapping
-    public ResponseEntity<List<Terminal>> listarTerminales(){
+    public ResponseEntity<List<TerminalDto>> listarTerminales(){
         return ResponseEntity.ok(terminalService.listarTerminales());
     }
 

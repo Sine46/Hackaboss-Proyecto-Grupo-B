@@ -16,11 +16,14 @@ public class Producto {
     private String nombre;
     private Double precio;
     private int stock;
+
     @ManyToOne
     @JoinColumn(name="categoria_id")
     private Categoria categoria;
-    @ManyToMany
-    private List<Pedido> pedidos;
+
+    @OneToMany(mappedBy = "producto")
+    private List<PedidoProducto> pedidoProductos;
+
     private Boolean activo;
 
 }

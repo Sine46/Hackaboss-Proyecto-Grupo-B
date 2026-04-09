@@ -1,16 +1,14 @@
 package com.hackaboss.Proyecto_1_Grupo_B.service;
 
+import com.hackaboss.Proyecto_1_Grupo_B.dto.AgregarProductoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.CrearPedidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.PedidoDto;
-import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.DatosNoValidosException;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.PedidoNoEncontradoException;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.ProductoNoEncontradoException;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.TerminalNoEncontradoException;
-import com.hackaboss.Proyecto_1_Grupo_B.model.Estado;
-import com.hackaboss.Proyecto_1_Grupo_B.model.Pedido;
-import com.hackaboss.Proyecto_1_Grupo_B.model.Producto;
-import com.hackaboss.Proyecto_1_Grupo_B.model.Terminal;
+import com.hackaboss.Proyecto_1_Grupo_B.mapper.PedidoMapper;
+import com.hackaboss.Proyecto_1_Grupo_B.model.*;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.PedidoRepository;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.ProductoRepository;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.TerminalRepository;
@@ -19,10 +17,9 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PedidoService {
@@ -32,6 +29,8 @@ public class PedidoService {
     private ProductoRepository productoRepository;
     @Autowired
     private TerminalRepository terminalRepository;
+    @Autowired
+    private PedidoMapper pedidoMapper;
 
     // crear pedido
     public PedidoDto crearPedido(CrearPedidoDto dto) {
@@ -43,28 +42,38 @@ public class PedidoService {
         pedido.setHoraPedido(LocalDateTime.now());
         pedido.setPrecioTotal(0.0);
         Pedido guardado = pedidoRepository.save(pedido);
-        return toDto(guardado);
+        return pedidoMapper.toDto(guardado);
     }
 
     // Añadir Producto a Pedido
-    public PedidoDto agregarProducto(Long pedidoId, List<Long> productos) {
+    public PedidoDto agregarProducto(Long pedidoId, List<AgregarProductoDto> productosDto) {
+        Map<Producto, Integer> productos = productosDto.stream()
+                .collect(Collectors.toMap(
+                        dto-> productoRepository.findById(dto.getProductoId())
+                                .orElseThrow(()-> new ProductoNoEncontradoException(dto.getProductoId())),
+                        AgregarProductoDto::getCantidad
+                ));
         Pedido pedido = pedidoExiste(pedidoId);
         if (pedido.getEstado() != Estado.CREADO) {
             throw new DatosNoValidosException("No es posible modificar el pedido en este estado");
         }
-        if (productos.isEmpty() || productos == null) throw new DatosNoValidosException("La lista de productos no puede estar vacía");
-        for (Long productoId : productos) {
-            Producto producto = productoRepository.findById(productoId)
-                    .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
-            if (producto.getStock() <= 0)
-                throw new DatosNoValidosException("No hay stock disponible para el producto con id : " + productoId);
-            pedido.getProductos().add(producto);
-            producto.setStock(producto.getStock() - 1);
-            pedido.setPrecioTotal(calcularTotal(pedido));
-        }
+        if (productos == null || productos.isEmpty()) throw new DatosNoValidosException("La lista de productos no puede estar vacía");
 
-        pedidoRepository.save(pedido);
-        return toDto(pedido);
+        productos.forEach((producto, cantidad) -> {
+            if (producto.getStock()<cantidad) throw new DatosNoValidosException("No hay stock suficiente de " + producto.getNombre() + ". Cantidad maxima disponible: " + producto.getStock());
+            producto.setStock(producto.getStock() - cantidad);
+            PedidoProducto pedidoProducto = new PedidoProducto();
+            pedidoProducto.setPedido(pedido);
+            pedidoProducto.setProducto(producto);
+            pedidoProducto.setCantidad(cantidad);
+            pedidoProducto.setPrecioUnidad(producto.getPrecio());
+            pedido.getPedidoProductos().add(pedidoProducto);
+            producto.getPedidoProductos().add(pedidoProducto);
+        });
+
+        pedido.setPrecioTotal(calcularTotal(pedido));
+
+        return pedidoMapper.toDto(pedidoRepository.save(pedido));
     }
 
     // Eliminar Producto a pedido
@@ -73,14 +82,14 @@ public class PedidoService {
         if (pedido.getEstado() != Estado.CREADO) {
             throw new DatosNoValidosException("No es posible modificar el pedido en este estado");
         }
-        boolean eliminado = pedido.getProductos()
-                .removeIf(producto -> producto.getId().equals(productoId));
+        boolean eliminado = pedido.getPedidoProductos()
+                .removeIf(pp -> pp.getProducto().getId().equals(productoId));
         if (!eliminado) {
             throw new DatosNoValidosException("El producto no está en el pedido");
         }
         pedido.setPrecioTotal(calcularTotal(pedido));
 
-        return toDto(pedidoRepository.save(pedido));
+        return pedidoMapper.toDto(pedidoRepository.save(pedido));
     }
 
     // cambiar estado de Pedido
@@ -88,13 +97,13 @@ public class PedidoService {
         Pedido pedido = pedidoExiste(pedidoId);
         validarCambioEstado(pedido.getEstado());
         pedido.setEstado(estado);
-        return toDto(pedidoRepository.save(pedido));
+        return pedidoMapper.toDto(pedidoRepository.save(pedido));
     }
 
     // Find by id/codigo
     public PedidoDto findById(Long pedidoId) {
         Pedido pedido = pedidoExiste(pedidoId);
-        return toDto(pedido);
+        return pedidoMapper.toDto(pedido);
     }
 
     // listar pedidos
@@ -104,38 +113,13 @@ public class PedidoService {
                 ? pedidoRepository.findAll()
                 : pedidoRepository.findByEstado(estado);
 
-        return pedidos.stream()
-                .sorted(Comparator.comparing(Pedido::getHoraPedido))
-                .map(this::toDto)
-                .toList();
-    }
-
-    // convertir a DTO
-    private PedidoDto toDto(Pedido pedido) {
-        PedidoDto dto = new PedidoDto();
-        dto.setId(pedido.getId());
-        dto.setPrecioTotal(pedido.getPrecioTotal());
-        dto.setHoraPedido(pedido.getHoraPedido());
-        dto.setProductos(
-                pedido.getProductos()
-                        .stream()
-                        .map(producto -> {
-                            ProductoDto productoDto = new ProductoDto();
-                            productoDto.setId(producto.getId());
-                            productoDto.setNombre(producto.getNombre());
-                            productoDto.setPrecio(producto.getPrecio());
-                            productoDto.setCategoriaNombre(producto.getCategoria().getNombre());
-                            return productoDto;
-                        })
-                        .toList()
-        );
-        return dto;
+        return pedidoMapper.toDtoList(pedidos);
     }
 
     // calcular Precio
     private double calcularTotal(Pedido pedido) {
-        return pedido.getProductos().stream()
-                .mapToDouble(Producto::getPrecio)
+        return pedido.getPedidoProductos().stream()
+                .mapToDouble(p-> p.getPrecioUnidad() * p.getCantidad())
                 .sum();
 
     }

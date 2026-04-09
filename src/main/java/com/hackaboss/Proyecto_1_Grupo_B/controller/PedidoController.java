@@ -1,8 +1,10 @@
 package com.hackaboss.Proyecto_1_Grupo_B.controller;
 
+import com.hackaboss.Proyecto_1_Grupo_B.dto.AgregarProductoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.CrearPedidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.PedidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Estado;
+import com.hackaboss.Proyecto_1_Grupo_B.model.Producto;
 import com.hackaboss.Proyecto_1_Grupo_B.service.PedidoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -21,12 +26,12 @@ public class PedidoController {
     @PostMapping
     public ResponseEntity<PedidoDto> crearPedido(@RequestBody CrearPedidoDto dto) {
         PedidoDto pedido = pedidoService.crearPedido(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
+        return ResponseEntity.status(CREATED).body(pedido);
     }
 
     // añadir producto a pedido
     @PostMapping("/{pedidoId}/productos")
-    public ResponseEntity<PedidoDto> agregarProducto(@PathVariable Long pedidoId, @RequestBody List<Long> productos) {
+    public ResponseEntity<PedidoDto> agregarProducto(@PathVariable Long pedidoId, @RequestBody List<AgregarProductoDto> productos) {
         return ResponseEntity.ok(pedidoService.agregarProducto(pedidoId, productos));
     }
 
