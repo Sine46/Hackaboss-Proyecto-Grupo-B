@@ -11,7 +11,7 @@ import java.util.Map;
 public class ManejadorGlobalDeExcepciones {
     @ExceptionHandler(DatosNoValidosException.class)
     public ResponseEntity<Map<String, String>> manejarDatosNoValidos(DatosNoValidosException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("Error: ", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error: ", ex.getMessage()));
     }
 
     @ExceptionHandler(PedidoNoEncontradoException.class)

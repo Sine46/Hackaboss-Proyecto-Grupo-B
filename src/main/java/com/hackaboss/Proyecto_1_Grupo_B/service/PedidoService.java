@@ -12,14 +12,13 @@ import com.hackaboss.Proyecto_1_Grupo_B.model.*;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.PedidoRepository;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.ProductoRepository;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.TerminalRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class PedidoService {
@@ -46,30 +45,53 @@ public class PedidoService {
     }
 
     // Añadir Producto a Pedido
+    @Transactional
     public PedidoDto agregarProducto(Long pedidoId, List<AgregarProductoDto> productosDto) {
-        Map<Producto, Integer> productos = productosDto.stream()
-                .collect(Collectors.toMap(
-                        dto-> productoRepository.findById(dto.getProductoId())
-                                .orElseThrow(()-> new ProductoNoEncontradoException(dto.getProductoId())),
-                        AgregarProductoDto::getCantidad
-                ));
+
+        if (productosDto == null || productosDto.isEmpty()) {
+            throw new DatosNoValidosException("La lista de productos no puede estar vacía");
+        }
+
         Pedido pedido = pedidoExiste(pedidoId);
+
         if (pedido.getEstado() != Estado.CREADO) {
             throw new DatosNoValidosException("No es posible modificar el pedido en este estado");
         }
-        if (productos == null || productos.isEmpty()) throw new DatosNoValidosException("La lista de productos no puede estar vacía");
 
-        productos.forEach((producto, cantidad) -> {
-            if (producto.getStock()<cantidad) throw new DatosNoValidosException("No hay stock suficiente de " + producto.getNombre() + ". Cantidad maxima disponible: " + producto.getStock());
+        for (AgregarProductoDto dto : productosDto) {
+            Producto producto = productoRepository.findById(dto.getProductoId())
+                    .orElseThrow(() -> new ProductoNoEncontradoException(dto.getProductoId()));
+            int cantidad = dto.getCantidad();
+
+            if (producto.getStock() < cantidad) {
+                throw new DatosNoValidosException(
+                        "No hay stock suficiente de " + producto.getNombre() +
+                                ". Cantidad máxima disponible: " + producto.getStock()
+                );
+            }
+
+            PedidoProducto existente = null;
+            for (PedidoProducto pp : pedido.getPedidoProductos()) {
+                if (pp.getProducto().getId().equals(producto.getId())) {
+                    existente = pp;
+                    break;
+                }
+            }
+
+            if (existente != null) {
+                existente.setCantidad(existente.getCantidad() + cantidad);
+            } else {
+                PedidoProducto pedidoProducto = new PedidoProducto();
+                pedidoProducto.setPedido(pedido);
+                pedidoProducto.setProducto(producto);
+                pedidoProducto.setCantidad(cantidad);
+                pedidoProducto.setPrecioUnidad(producto.getPrecio());
+
+                pedido.getPedidoProductos().add(pedidoProducto);
+                producto.getPedidoProductos().add(pedidoProducto);
+            }
             producto.setStock(producto.getStock() - cantidad);
-            PedidoProducto pedidoProducto = new PedidoProducto();
-            pedidoProducto.setPedido(pedido);
-            pedidoProducto.setProducto(producto);
-            pedidoProducto.setCantidad(cantidad);
-            pedidoProducto.setPrecioUnidad(producto.getPrecio());
-            pedido.getPedidoProductos().add(pedidoProducto);
-            producto.getPedidoProductos().add(pedidoProducto);
-        });
+        }
 
         pedido.setPrecioTotal(calcularTotal(pedido));
 

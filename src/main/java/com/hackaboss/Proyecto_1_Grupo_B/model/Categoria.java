@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -15,7 +16,7 @@ public class Categoria {
     private Long id;
     private String nombre;
     @OneToMany(mappedBy = "categoria")
-    private List<Producto> productos;
+    private List<Producto> productos = new ArrayList<>();
 
 
 
