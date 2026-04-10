@@ -26,7 +26,7 @@ public class TerminalController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Terminal>actualizarTerminal(@PathVariable Long id, @RequestBody Terminal terminal){
+    public ResponseEntity<TerminalDto>actualizarTerminal(@PathVariable Long id, @RequestBody Terminal terminal){
         return ResponseEntity.ok(terminalService.actualizarTerminal(id, terminal));
     }
 
