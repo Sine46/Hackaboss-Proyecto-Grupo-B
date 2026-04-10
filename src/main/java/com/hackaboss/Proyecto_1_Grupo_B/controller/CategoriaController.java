@@ -24,4 +24,9 @@ public class CategoriaController {
     public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria){
         return ResponseEntity.ok(categoriaService.crearCategoria(categoria));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Categoria> actualizarCategoria(@PathVariable Long id, @RequestBody Categoria categoria){
+        return ResponseEntity.ok(categoriaService.actualizarCategoria(id, categoria));
+    }
 }

@@ -24,4 +24,14 @@ public class TerminalController {
     public ResponseEntity<Terminal> crearTerminal(@RequestBody Terminal terminal){
         return ResponseEntity.ok(terminalService.crearTerminal(terminal));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Terminal>actualizarTerminal(@PathVariable Long id, @RequestBody Terminal terminal){
+        return ResponseEntity.ok(terminalService.actualizarTerminal(id, terminal));
+    }
+
+    @GetMapping("/mas-utilizada")
+    public ResponseEntity<TerminalDto>buscarTerminalMasUtilizada(){
+        return ResponseEntity.ok(terminalService.buscarTerminalMasUtilizada());
+    }
 }

@@ -33,4 +33,10 @@ public class ManejadorGlobalDeExcepciones {
                 .status(HttpStatus.NOT_FOUND)
                 .body(Map.of("error", ex.getMessage()));
     }
+    @ExceptionHandler(CategoriaNoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> manejarCategoriaNoEncontrada(CategoriaNoEncontradaException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", ex.getMessage()));
+    }
 }
