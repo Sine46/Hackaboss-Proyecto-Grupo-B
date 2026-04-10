@@ -14,6 +14,7 @@ public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 20)
     private String nombre;
     @OneToMany(mappedBy = "categoria")
     private List<Producto> productos = new ArrayList<>();

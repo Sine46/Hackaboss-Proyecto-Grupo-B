@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 @Service
 public class ProductoService {
 
+    // Inyeccion de repos y mapper
     @Autowired
     private ProductoRepository productoRepo;
     @Autowired
@@ -28,6 +29,7 @@ public class ProductoService {
     private ProductoMapper productoMapper;
 
 
+    // Metodo de listar productos
     public List<ProductoDto> listarProductos(Boolean activo, Long categoriaId, String orden, Boolean desc) {
         List<Producto> productos = productoRepo.findAll();
 
@@ -64,6 +66,7 @@ public class ProductoService {
                 .toList();
     }
 
+    // Metodo de crear un producto
     public ProductoDto crearProducto(CrearProductoDto productoDto) {
 
         Producto producto = new Producto();
@@ -88,7 +91,7 @@ public class ProductoService {
 
     }
 
-
+    // Metodo para actualizar un producto
     public ProductoDto actualizarProducto(Long productoId, CrearProductoDto dto) {
         Producto p = productoRepo.findById(productoId)
                 .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
@@ -104,7 +107,7 @@ public class ProductoService {
         if (dto.getPrecio() == null || dto.getPrecio() < 0) {
             throw new DatosNoValidosException("El precio debe ser mayor que 0");
         }
-        if (dto.getStock() < 0) {                                        //Aqui no necesito hacer validacion null ya que tenemos "int" y es primitivo lo cual nunca es null
+        if (dto.getStock() < 0) {                                                //Aqui no necesito hacer validacion null ya que tenemos "int" y es primitivo lo cual nunca es null
             throw new DatosNoValidosException("El stock debe ser positivo");
         }
         if (dto.getCategoriaId() == null) {
@@ -124,7 +127,7 @@ public class ProductoService {
 
 
     }
-
+    // Metodo de desactivar un Producto
     public void desactivar(Long id) {
         productoRepo.findById(id).map(p -> {
                     p.setActivo(false);
