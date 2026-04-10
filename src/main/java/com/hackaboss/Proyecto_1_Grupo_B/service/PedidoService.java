@@ -141,7 +141,7 @@ public class PedidoService {
     // calcular Precio
     private double calcularTotal(Pedido pedido) {
         return pedido.getPedidoProductos().stream()
-                .mapToDouble(p-> p.getPrecioUnidad() * p.getCantidad())
+                .mapToDouble(p -> p.getPrecioUnidad() * p.getCantidad())
                 .sum();
 
     }

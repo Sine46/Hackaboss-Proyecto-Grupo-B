@@ -16,11 +16,11 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoProducto> pedidoProductos = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn (name = "terminal_id")
+    @JoinColumn(name = "terminal_id")
     private Terminal terminal;
 
     private double precioTotal;

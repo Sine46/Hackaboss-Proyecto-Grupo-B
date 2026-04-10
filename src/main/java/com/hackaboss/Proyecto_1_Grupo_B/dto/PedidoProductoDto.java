@@ -5,11 +5,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CrearProductoDto {
-
+public class PedidoProductoDto {
+    private Long id;
     private String nombre;
-    private Double precio;
-    private Long categoriaId;
-    private Integer stock;
-
+    private double precio;
+    private String categoriaNombre;
+    private int cantidad;
 }

@@ -27,9 +27,9 @@ public class TerminalService {
     public Terminal crearTerminal(Terminal terminal) {
         if (terminal.getNombre() == null || terminal.getNombre().isBlank()) {
             throw new DatosNoValidosException("El nombre introducido no puede estar en blanco");
-        }else if(terminalRepository.existsByNombreIgnoreCase(terminal.getNombre())) {
+        } else if (terminalRepository.existsByNombreIgnoreCase(terminal.getNombre())) {
             throw new DatosNoValidosException("El nombre introducido ya existe");
-        }else {
+        } else {
             return terminalRepository.save(terminal);
         }
     }

@@ -28,7 +28,6 @@ public class ProductoService {
     private ProductoMapper productoMapper;
 
 
-
     public List<ProductoDto> listarProductos(Boolean activo, Long categoriaId, String orden, Boolean desc) {
         List<Producto> productos = productoRepo.findAll();
 
@@ -95,17 +94,17 @@ public class ProductoService {
                 .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
 
         Categoria c = categoriaRepo.findById(dto.getCategoriaId())
-                .orElseThrow(()-> new DatosNoValidosException("Categoria no encontrada"));
+                .orElseThrow(() -> new DatosNoValidosException("Categoria no encontrada"));
 
         if (dto.getNombre() == null || dto.getNombre().isBlank()) {
             throw new DatosNoValidosException("El producto necesita un nombre");
-        } else if (productoRepo.existsByNombreIgnoreCaseAndIdNot(dto.getNombre(),productoId)) {
+        } else if (productoRepo.existsByNombreIgnoreCaseAndIdNot(dto.getNombre(), productoId)) {
             throw new DatosNoValidosException("El producto ya existe");
         }
         if (dto.getPrecio() == null || dto.getPrecio() < 0) {
             throw new DatosNoValidosException("El precio debe ser mayor que 0");
         }
-        if (p.getStock() < 0) {                                        //Aqui no necesito hacer validacion null ya que tenemos "int" y es primitivo lo cual nunca es null
+        if (dto.getStock() < 0) {                                        //Aqui no necesito hacer validacion null ya que tenemos "int" y es primitivo lo cual nunca es null
             throw new DatosNoValidosException("El stock debe ser positivo");
         }
         if (dto.getCategoriaId() == null) {
@@ -115,21 +114,34 @@ public class ProductoService {
         p.setNombre(dto.getNombre());
         p.setPrecio(dto.getPrecio());
         p.setCategoria(c);
-        p.setStock(p.getStock());
-        p.setActivo(p.getActivo());
+        p.setStock(dto.getStock());
 
-        Producto saved = productoRepo.save(p);
-        return productoMapper.toDto(saved);
+        productoRepo.save(p);
+        return productoMapper.toDto(
+                productoRepo.findById(productoId)
+                        .orElseThrow(() -> new ProductoNoEncontradoException(productoId))
+        );
 
 
     }
-            public void desactivar (Long id){
-                productoRepo.findById(id).map(p -> {
-                            p.setActivo(false);
-                            return productoRepo.save(p);
-                        })
-                        .orElseThrow(() -> new EntityNotFoundException("No se ha podido encontrar el producto con el id " + id));
-            }
 
+    public void desactivar(Long id) {
+        productoRepo.findById(id).map(p -> {
+                    p.setActivo(false);
+                    return productoRepo.save(p);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("No se ha podido encontrar el producto con el id " + id));
+    }
 
-        }
+    // Modificar Stock
+    public ProductoDto modStock(Long productoId, Integer stock) {
+        if (stock < 0) throw new DatosNoValidosException("El stock debe ser mayor que 0");
+        Producto producto = productoRepo.findById(productoId)
+                .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
+
+        producto.setStock(stock);
+        productoRepo.save(producto);
+        return productoMapper.toDto(producto);
+    }
+
+}
