@@ -16,12 +16,12 @@ public class TerminalController {
     private TerminalService terminalService;
 
     @GetMapping
-    public ResponseEntity<List<TerminalDto>> listarTerminales(){
+    public ResponseEntity<List<TerminalDto>> listarTerminales() {
         return ResponseEntity.ok(terminalService.listarTerminales());
     }
 
     @PostMapping
-    public ResponseEntity<Terminal> crearTerminal(@RequestBody Terminal terminal){
+    public ResponseEntity<Terminal> crearTerminal(@RequestBody Terminal terminal) {
         return ResponseEntity.ok(terminalService.crearTerminal(terminal));
     }
 

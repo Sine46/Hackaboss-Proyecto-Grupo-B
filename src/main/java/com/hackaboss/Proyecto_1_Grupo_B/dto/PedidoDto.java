@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PedidoDto {
     private Long id;
-    private List<ProductoDto> productos;
+    private List<PedidoProductoDto> productos;
     private double precioTotal;
     private LocalDateTime horaPedido;
 }

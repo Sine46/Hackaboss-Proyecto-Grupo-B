@@ -19,7 +19,7 @@ public class CategoriaService {
     @Autowired
     private ProductoMapper productoMapper;
 
-    public List<CategoriaDto> listarCategorias(){
+    public List<CategoriaDto> listarCategorias() {
 
         return categoriaRepository.findAll().stream()
                 .map(this::categoriaToDto)
@@ -29,9 +29,9 @@ public class CategoriaService {
     public Categoria crearCategoria(Categoria categoria) {
         if (categoria.getNombre() == null || categoria.getNombre().isBlank()) {
             throw new DatosNoValidosException("El nombre introducido no puede estar en blanco");
-        }else if (categoriaRepository.existsByNombreIgnoreCase(categoria.getNombre())) {
+        } else if (categoriaRepository.existsByNombreIgnoreCase(categoria.getNombre())) {
             throw new DatosNoValidosException("La categoria ya existe");
-        }else {
+        } else {
             return categoriaRepository.save(categoria);
         }
     }

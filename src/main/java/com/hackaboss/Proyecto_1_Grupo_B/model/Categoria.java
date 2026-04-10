@@ -19,5 +19,4 @@ public class Categoria {
     private List<Producto> productos = new ArrayList<>();
 
 
-
 }

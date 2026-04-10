@@ -1,7 +1,7 @@
 package com.hackaboss.Proyecto_1_Grupo_B.mapper;
 
 import com.hackaboss.Proyecto_1_Grupo_B.dto.PedidoDto;
-import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoDto;
+import com.hackaboss.Proyecto_1_Grupo_B.dto.PedidoProductoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Pedido;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +19,16 @@ public class PedidoMapper {
                 pedido.getPedidoProductos()
                         .stream()
                         .map(pedidoProducto -> {
-                            ProductoDto productoDto = new ProductoDto();
-                            productoDto.setId(pedidoProducto.getId());
+                            PedidoProductoDto productoDto = new PedidoProductoDto();
+
+                            productoDto.setId(pedidoProducto.getProducto().getId());
                             productoDto.setNombre(pedidoProducto.getProducto().getNombre());
-                            productoDto.setPrecio(pedidoProducto.getProducto().getPrecio());
-                            productoDto.setCategoriaNombre(pedidoProducto.getProducto().getCategoria().getNombre());
+                            productoDto.setPrecio(pedidoProducto.getPrecioUnidad());
+                            productoDto.setCategoriaNombre(
+                                    pedidoProducto.getProducto().getCategoria().getNombre()
+                            );
+                            productoDto.setCantidad(pedidoProducto.getCantidad());
+
                             return productoDto;
                         })
                         .toList()
@@ -31,7 +36,7 @@ public class PedidoMapper {
         return dto;
     }
 
-    public List<PedidoDto> toDtoList(List<Pedido> pedidos){
+    public List<PedidoDto> toDtoList(List<Pedido> pedidos) {
         return pedidos.stream()
                 .map(this::toDto)
                 .toList();

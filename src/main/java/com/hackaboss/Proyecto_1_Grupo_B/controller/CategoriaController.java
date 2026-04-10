@@ -16,12 +16,12 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @GetMapping
-    public ResponseEntity<List<CategoriaDto>> listarCategorias(){
+    public ResponseEntity<List<CategoriaDto>> listarCategorias() {
         return ResponseEntity.ok(categoriaService.listarCategorias());
     }
 
     @PostMapping
-    public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria){
+    public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria) {
         return ResponseEntity.ok(categoriaService.crearCategoria(categoria));
     }
 
