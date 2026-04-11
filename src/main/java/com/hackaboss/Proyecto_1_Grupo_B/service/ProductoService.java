@@ -2,12 +2,15 @@ package com.hackaboss.Proyecto_1_Grupo_B.service;
 
 import com.hackaboss.Proyecto_1_Grupo_B.dto.CrearProductoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoDto;
+import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoMasVendidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.DatosNoValidosException;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.ProductoNoEncontradoException;
 import com.hackaboss.Proyecto_1_Grupo_B.mapper.ProductoMapper;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Categoria;
+import com.hackaboss.Proyecto_1_Grupo_B.model.PedidoProducto;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Producto;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.CategoriaRepository;
+import com.hackaboss.Proyecto_1_Grupo_B.repository.PedidoProductoRepository;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.ProductoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -26,7 +31,8 @@ public class ProductoService {
     private CategoriaRepository categoriaRepo;
     @Autowired
     private ProductoMapper productoMapper;
-
+    @Autowired
+    private PedidoProductoRepository pedidoProductoRepository;
 
     public List<ProductoDto> listarProductos(Boolean activo, Long categoriaId, String orden, Boolean desc) {
         List<Producto> productos = productoRepo.findAll();
@@ -93,9 +99,6 @@ public class ProductoService {
         Producto p = productoRepo.findById(productoId)
                 .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
 
-        Categoria c = categoriaRepo.findById(dto.getCategoriaId())
-                .orElseThrow(() -> new DatosNoValidosException("Categoria no encontrada"));
-
         if (dto.getNombre() == null || dto.getNombre().isBlank()) {
             throw new DatosNoValidosException("El producto necesita un nombre");
         } else if (productoRepo.existsByNombreIgnoreCaseAndIdNot(dto.getNombre(), productoId)) {
@@ -104,12 +107,14 @@ public class ProductoService {
         if (dto.getPrecio() == null || dto.getPrecio() < 0) {
             throw new DatosNoValidosException("El precio debe ser mayor que 0");
         }
-        if (dto.getStock() < 0) {                                        //Aqui no necesito hacer validacion null ya que tenemos "int" y es primitivo lo cual nunca es null
+        if (dto.getStock() == null || dto.getStock() < 0) {
             throw new DatosNoValidosException("El stock debe ser positivo");
         }
         if (dto.getCategoriaId() == null) {
             throw new DatosNoValidosException("categoriaId es obligatorio");
         }
+        Categoria c = categoriaRepo.findById(dto.getCategoriaId())
+                .orElseThrow(() -> new DatosNoValidosException("Categoria no encontrada"));
 
         p.setNombre(dto.getNombre());
         p.setPrecio(dto.getPrecio());
@@ -121,8 +126,6 @@ public class ProductoService {
                 productoRepo.findById(productoId)
                         .orElseThrow(() -> new ProductoNoEncontradoException(productoId))
         );
-
-
     }
 
     public void desactivar(Long id) {
@@ -142,6 +145,24 @@ public class ProductoService {
         producto.setStock(stock);
         productoRepo.save(producto);
         return productoMapper.toDto(producto);
+    }
+
+    //Buscar Producto Mas Vendido
+    public List<ProductoMasVendidoDto> getProductosMasVendidos() {
+
+        Map<Producto, Integer> conteo = pedidoProductoRepository.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        PedidoProducto::getProducto,
+                        Collectors.summingInt(PedidoProducto::getCantidad)
+                ));
+
+        return conteo.entrySet().stream()
+                .sorted(Map.Entry.<Producto,Integer>comparingByValue().reversed())
+                .map(e -> new ProductoMasVendidoDto(
+                        productoMapper.toDto(e.getKey()),
+                        e.getValue()
+                ))
+                .collect(Collectors.toList());
     }
 
 }

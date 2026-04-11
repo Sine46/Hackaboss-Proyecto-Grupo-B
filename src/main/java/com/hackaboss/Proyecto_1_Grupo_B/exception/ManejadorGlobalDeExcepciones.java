@@ -11,7 +11,7 @@ import java.util.Map;
 public class ManejadorGlobalDeExcepciones {
     @ExceptionHandler(DatosNoValidosException.class)
     public ResponseEntity<Map<String, String>> manejarDatosNoValidos(DatosNoValidosException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error: ", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
     }
 
     @ExceptionHandler(PedidoNoEncontradoException.class)
@@ -39,5 +39,12 @@ public class ManejadorGlobalDeExcepciones {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> manejarException(Exception ex) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "Error inesperado"));
     }
 }

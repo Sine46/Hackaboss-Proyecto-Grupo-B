@@ -2,6 +2,7 @@ package com.hackaboss.Proyecto_1_Grupo_B.controller;
 
 import com.hackaboss.Proyecto_1_Grupo_B.dto.CrearProductoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoDto;
+import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoMasVendidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.StockDto;
 import com.hackaboss.Proyecto_1_Grupo_B.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +50,10 @@ public class ProductoController {
     @PatchMapping("/{id}/stock")
     public ResponseEntity<ProductoDto> modStock(@PathVariable Long id, @RequestBody StockDto stock) {
         return ResponseEntity.ok(productoService.modStock(id, stock.getStock()));
+    }
+
+    @GetMapping("/mas-vendidos")
+    public ResponseEntity<List<ProductoMasVendidoDto>> getProductosMasVendidos() {
+        return ResponseEntity.ok(productoService.getProductosMasVendidos());
     }
 }
