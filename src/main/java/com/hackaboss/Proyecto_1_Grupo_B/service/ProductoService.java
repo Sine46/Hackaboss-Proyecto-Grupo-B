@@ -91,7 +91,9 @@ public class ProductoService {
         producto.setNombre(productoDto.getNombre());
         producto.setPrecio(productoDto.getPrecio());
         producto.setActivo(true);
-        producto.setStock(0);
+        if(productoDto.getStock()!=null && productoDto.getStock()>0){
+            producto.setStock(productoDto.getStock());
+        } else producto.setStock(0);
         productoRepo.save(producto);
         return productoMapper.toDto(producto);
 
