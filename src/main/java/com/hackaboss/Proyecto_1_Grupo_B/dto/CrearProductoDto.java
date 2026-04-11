@@ -11,5 +11,5 @@ public class CrearProductoDto {
     private Double precio;
     private Long categoriaId;
     private Integer stock;
-
+    private Boolean estado;
 }

@@ -82,7 +82,7 @@ public class ProductoService {
             throw new DatosNoValidosException("El producto ya existe");
         }
         if (productoDto.getPrecio() < 0) {
-            throw new DatosNoValidosException("El precio debe ser mayor que 0");
+            throw new DatosNoValidosException("El precio no puede ser menor que 0");
         }
 
         producto.setCategoria(categoriaRepo.findById(productoDto.getCategoriaId())
@@ -118,8 +118,11 @@ public class ProductoService {
         if (dto.getCategoriaId() == null) {
             throw new DatosNoValidosException("categoriaId es obligatorio");
         }
+        if(dto.getEstado() != null) p.setActivo(dto.getEstado());
+
         Categoria c = categoriaRepo.findById(dto.getCategoriaId())
                 .orElseThrow(() -> new DatosNoValidosException("Categoria no encontrada"));
+
 
         p.setNombre(dto.getNombre());
         p.setPrecio(dto.getPrecio());
@@ -138,12 +141,12 @@ public class ProductoService {
                     p.setActivo(false);
                     return productoRepo.save(p);
                 })
-                .orElseThrow(() -> new EntityNotFoundException("No se ha podido encontrar el producto con el id " + id));
+                .orElseThrow(() -> new ProductoNoEncontradoException(id));
     }
 
     // Modificar Stock
     public ProductoDto modStock(Long productoId, Integer stock) {
-        if (stock < 0) throw new DatosNoValidosException("El stock debe ser mayor que 0");
+        if (stock == null || stock < 0) throw new DatosNoValidosException("El stock debe ser mayor que 0");
         Producto producto = productoRepo.findById(productoId)
                 .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
 

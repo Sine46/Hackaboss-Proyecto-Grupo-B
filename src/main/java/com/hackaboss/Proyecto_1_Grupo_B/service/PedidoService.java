@@ -82,6 +82,7 @@ public class PedidoService {
 
             if (existente != null) {
                 existente.setCantidad(existente.getCantidad() + cantidad);
+                if(existente.getCantidad() <= 0) eliminarProducto(pedidoId, producto.getId());
             } else {
                 PedidoProducto pedidoProducto = new PedidoProducto();
                 pedidoProducto.setPedido(pedido);
