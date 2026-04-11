@@ -61,6 +61,11 @@ public class PedidoService {
         for (AgregarProductoDto dto : productosDto) {
             Producto producto = productoRepository.findById(dto.getProductoId())
                     .orElseThrow(() -> new ProductoNoEncontradoException(dto.getProductoId()));
+            if (!Boolean.TRUE.equals(producto.getActivo())) {
+                throw new DatosNoValidosException(
+                        "El producto " + producto.getNombre() + " no está disponible"
+                );
+            }
             int cantidad = dto.getCantidad();
 
             if (producto.getStock() < cantidad) {
@@ -70,13 +75,10 @@ public class PedidoService {
                 );
             }
 
-            PedidoProducto existente = null;
-            for (PedidoProducto pp : pedido.getPedidoProductos()) {
-                if (pp.getProducto().getId().equals(producto.getId())) {
-                    existente = pp;
-                    break;
-                }
-            }
+            PedidoProducto existente = pedido.getPedidoProductos().stream()
+                    .filter(pp -> pp.getProducto().getId().equals(producto.getId()))
+                    .findFirst()
+                    .orElse(null);
 
             if (existente != null) {
                 existente.setCantidad(existente.getCantidad() + cantidad);
