@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 @Service
 public class ProductoService {
 
+    // Inyeccion de repos y mapper
     @Autowired
     private ProductoRepository productoRepo;
     @Autowired
@@ -34,6 +35,7 @@ public class ProductoService {
     @Autowired
     private PedidoProductoRepository pedidoProductoRepository;
 
+    // Metodo de listar productos
     public List<ProductoDto> listarProductos(Boolean activo, Long categoriaId, String orden, Boolean desc) {
         List<Producto> productos = productoRepo.findAll();
 
@@ -70,6 +72,7 @@ public class ProductoService {
                 .toList();
     }
 
+    // Metodo de crear un producto
     public ProductoDto crearProducto(CrearProductoDto productoDto) {
 
         Producto producto = new Producto();
@@ -94,7 +97,7 @@ public class ProductoService {
 
     }
 
-
+    // Metodo para actualizar un producto
     public ProductoDto actualizarProducto(Long productoId, CrearProductoDto dto) {
         Producto p = productoRepo.findById(productoId)
                 .orElseThrow(() -> new ProductoNoEncontradoException(productoId));
@@ -127,7 +130,7 @@ public class ProductoService {
                         .orElseThrow(() -> new ProductoNoEncontradoException(productoId))
         );
     }
-
+    // Metodo de desactivar un Producto
     public void desactivar(Long id) {
         productoRepo.findById(id).map(p -> {
                     p.setActivo(false);
