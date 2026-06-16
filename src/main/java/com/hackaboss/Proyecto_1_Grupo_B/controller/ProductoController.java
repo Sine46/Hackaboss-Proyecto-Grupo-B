@@ -5,6 +5,7 @@ import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoMasVendidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.StockDto;
 import com.hackaboss.Proyecto_1_Grupo_B.service.ProductoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/productos")
 public class ProductoController {
-
-    @Autowired
-    private ProductoService productoService;
+    private final ProductoService productoService;
 
     @GetMapping
     public ResponseEntity<List<ProductoDto>> listarProductos(@RequestParam(required = false) Boolean activo,

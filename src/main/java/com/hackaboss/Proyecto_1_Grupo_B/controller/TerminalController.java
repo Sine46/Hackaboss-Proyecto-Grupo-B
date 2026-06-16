@@ -3,17 +3,18 @@ package com.hackaboss.Proyecto_1_Grupo_B.controller;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.TerminalDto;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Terminal;
 import com.hackaboss.Proyecto_1_Grupo_B.service.TerminalService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/terminales")
 public class TerminalController {
-    @Autowired
-    private TerminalService terminalService;
+    private final TerminalService terminalService;
 
     @GetMapping
     public ResponseEntity<List<TerminalDto>> listarTerminales() {
