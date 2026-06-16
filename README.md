@@ -53,7 +53,7 @@ http://localhost:8080/doc/swagger-ui.html
 ### Configuración básica
 Para la configuración, dentro de application.properties: 
 ```
-spring.datasource.url=jdbc:mysql://localhost:8080/pedidos_db
+spring.datasource.url=jdbc:mysql://localhost:3306/pedidos_db
 spring.datasource.username=TU_USUARIO
 spring.datasource.password=TU_PASSWORD
 ```
