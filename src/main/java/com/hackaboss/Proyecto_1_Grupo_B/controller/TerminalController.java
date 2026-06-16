@@ -21,8 +21,8 @@ public class TerminalController {
     }
 
     @PostMapping
-    public ResponseEntity<Terminal> crearTerminal(@RequestBody Terminal terminal) {
-        return ResponseEntity.ok(terminalService.crearTerminal(terminal));
+    public ResponseEntity<TerminalDto> crearTerminal(@RequestBody TerminalDto terminalDto) {
+        return ResponseEntity.ok(terminalService.crearTerminal(terminalDto));
     }
 
     @PutMapping("/{id}")

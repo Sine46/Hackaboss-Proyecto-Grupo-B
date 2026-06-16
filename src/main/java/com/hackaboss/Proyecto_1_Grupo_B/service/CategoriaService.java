@@ -27,13 +27,16 @@ public class CategoriaService {
                 .toList();
     }
 
-    public Categoria crearCategoria(Categoria categoria) {
-        if (categoria.getNombre() == null || categoria.getNombre().isBlank()) {
+    public CategoriaDto crearCategoria(CategoriaDto categoriaDto) {
+         Categoria categoria = new Categoria();
+         categoria.setNombre(categoriaDto.getNombre());
+        if (categoriaDto.getNombre() == null || categoriaDto.getNombre().isBlank()) {
             throw new DatosNoValidosException("El nombre introducido no puede estar en blanco");
         } else if (categoriaRepository.existsByNombreIgnoreCase(categoria.getNombre())) {
             throw new DatosNoValidosException("La categoria ya existe");
         } else {
-            return categoriaRepository.save(categoria);
+            categoriaRepository.save(categoria);
+            return categoriaMapper.toDto(categoria);
         }
     }
 

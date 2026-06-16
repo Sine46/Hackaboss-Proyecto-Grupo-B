@@ -29,13 +29,16 @@ public class TerminalService {
                 .toList();
     }
 
-    public Terminal crearTerminal(Terminal terminal) {
+    public TerminalDto crearTerminal(TerminalDto terminalDto) {
+        Terminal terminal = new Terminal();
         if (terminal.getNombre() == null || terminal.getNombre().isBlank()) {
             throw new DatosNoValidosException("El nombre introducido no puede estar en blanco");
         } else if (terminalRepository.existsByNombreIgnoreCase(terminal.getNombre())) {
             throw new DatosNoValidosException("El nombre introducido ya existe");
         } else {
-            return terminalRepository.save(terminal);
+            terminal.setNombre(terminalDto.getNombre());
+            terminalRepository.save(terminal);
+            return terminalMapper.toDto(terminal);
         }
     }
 
