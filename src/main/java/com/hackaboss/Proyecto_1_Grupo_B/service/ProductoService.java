@@ -12,8 +12,7 @@ import com.hackaboss.Proyecto_1_Grupo_B.model.Producto;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.CategoriaRepository;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.PedidoProductoRepository;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.ProductoRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -22,18 +21,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@RequiredArgsConstructor
 @Service
 public class ProductoService {
 
     // Inyeccion de repos y mapper
-    @Autowired
-    private ProductoRepository productoRepo;
-    @Autowired
-    private CategoriaRepository categoriaRepo;
-    @Autowired
-    private ProductoMapper productoMapper;
-    @Autowired
-    private PedidoProductoRepository pedidoProductoRepository;
+    private final ProductoRepository productoRepo;
+    private final CategoriaRepository categoriaRepo;
+    private final ProductoMapper productoMapper;
+    private final PedidoProductoRepository pedidoProductoRepository;
 
     // Metodo de listar productos
     public List<ProductoDto> listarProductos(Boolean activo, Long categoriaId, String orden, Boolean desc) {
@@ -130,10 +126,7 @@ public class ProductoService {
         p.setStock(dto.getStock());
 
         productoRepo.save(p);
-        return productoMapper.toDto(
-                productoRepo.findById(productoId)
-                        .orElseThrow(() -> new ProductoNoEncontradoException(productoId))
-        );
+        return productoMapper.toDto(p);
     }
     // Metodo de desactivar un Producto
     public void desactivar(Long id) {

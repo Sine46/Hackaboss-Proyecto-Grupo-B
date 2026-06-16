@@ -12,24 +12,21 @@ import com.hackaboss.Proyecto_1_Grupo_B.model.*;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.PedidoRepository;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.ProductoRepository;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.TerminalRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class PedidoService {
-    @Autowired
-    private PedidoRepository pedidoRepository;
-    @Autowired
-    private ProductoRepository productoRepository;
-    @Autowired
-    private TerminalRepository terminalRepository;
-    @Autowired
-    private PedidoMapper pedidoMapper;
+    private final PedidoRepository pedidoRepository;
+    private final ProductoRepository productoRepository;
+    private final TerminalRepository terminalRepository;
+    private final PedidoMapper pedidoMapper;
 
     // crear pedido
     public PedidoDto crearPedido(CrearPedidoDto dto) {
@@ -118,10 +115,16 @@ public class PedidoService {
     }
 
     // cambiar estado de Pedido
-    public PedidoDto cambiarEstado(Long pedidoId, Estado estado) {
+    public PedidoDto avanzarEstado(Long pedidoId) {
         Pedido pedido = pedidoExiste(pedidoId);
-        validarCambioEstado(pedido.getEstado());
-        pedido.setEstado(estado);
+        switch (pedido.getEstado()) {
+            case CREADO -> pedido.setEstado(Estado.FINALIZADO);
+            case FINALIZADO -> pedido.setEstado(Estado.EN_PREPARACION);
+            case EN_PREPARACION -> pedido.setEstado(Estado.LISTO);
+            case LISTO -> pedido.setEstado(Estado.ENTREGADO);
+            case ENTREGADO -> throw new DatosNoValidosException("El pedido ya ha sido entregado, no se puede modificar");
+            default -> throw new DatosNoValidosException("Estado de pedido no válido");
+        }
         return pedidoMapper.toDto(pedidoRepository.save(pedido));
     }
 
@@ -156,12 +159,4 @@ public class PedidoService {
                 .orElseThrow(() -> new PedidoNoEncontradoException(id));
     }
 
-    // estado
-    private void validarCambioEstado(Estado estado) {
-        if (estado == Estado.FINALIZADO) {
-            throw new DatosNoValidosException("El pedido ya está finalizado");
-        }
-
-
-    }
 }

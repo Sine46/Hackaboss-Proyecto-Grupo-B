@@ -2,15 +2,16 @@ package com.hackaboss.Proyecto_1_Grupo_B.mapper;
 
 import com.hackaboss.Proyecto_1_Grupo_B.dto.TerminalDto;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Terminal;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Component
 public class TerminalMapper {
-    @Autowired
-    private PedidoMapper pedidoMapper;
+    private final PedidoMapper pedidoMapper;
 
     public TerminalDto toDto(Terminal terminal) {
         TerminalDto terminalDto = new TerminalDto();

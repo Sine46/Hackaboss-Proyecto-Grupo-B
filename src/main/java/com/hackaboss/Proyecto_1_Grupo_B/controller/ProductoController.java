@@ -6,7 +6,6 @@ import com.hackaboss.Proyecto_1_Grupo_B.dto.ProductoMasVendidoDto;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.StockDto;
 import com.hackaboss.Proyecto_1_Grupo_B.service.ProductoService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/productos")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ProductoController {
     private final ProductoService productoService;
 

@@ -2,15 +2,15 @@ package com.hackaboss.Proyecto_1_Grupo_B.mapper;
 
 import com.hackaboss.Proyecto_1_Grupo_B.dto.CategoriaDto;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Categoria;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Component
 public class CategoriaMapper {
-    @Autowired
-    private ProductoMapper productoMapper;
+    private final ProductoMapper productoMapper;
     public CategoriaDto toDto(Categoria categoria) {
         CategoriaDto categoriaDto = new CategoriaDto();
         categoriaDto.setId(categoria.getId());

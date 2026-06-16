@@ -7,7 +7,6 @@ import com.hackaboss.Proyecto_1_Grupo_B.model.Estado;
 import com.hackaboss.Proyecto_1_Grupo_B.service.PedidoService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/pedidos")
+@CrossOrigin(origins = "http://localhost:5173")
 public class PedidoController {
     private final PedidoService pedidoService;
 
@@ -41,8 +41,8 @@ public class PedidoController {
 
     // Cambiar estado del pedido
     @PatchMapping("/{pedidoId}/estado")
-    public ResponseEntity<PedidoDto> cambiarEstado(@PathVariable Long pedidoId, @RequestParam Estado estado) {
-        return ResponseEntity.ok(pedidoService.cambiarEstado(pedidoId, estado)
+    public ResponseEntity<PedidoDto> avanzarEstado(@PathVariable Long pedidoId) {
+        return ResponseEntity.ok(pedidoService.avanzarEstado(pedidoId)
         );
     }
 

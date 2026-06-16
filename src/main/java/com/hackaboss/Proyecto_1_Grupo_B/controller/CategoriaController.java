@@ -4,7 +4,6 @@ import com.hackaboss.Proyecto_1_Grupo_B.dto.CategoriaDto;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Categoria;
 import com.hackaboss.Proyecto_1_Grupo_B.service.CategoriaService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/categorias")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CategoriaController {
 
     private final CategoriaService categoriaService;

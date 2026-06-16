@@ -3,24 +3,21 @@ package com.hackaboss.Proyecto_1_Grupo_B.service;
 import com.hackaboss.Proyecto_1_Grupo_B.dto.TerminalDto;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.DatosNoValidosException;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.TerminalNoEncontradoException;
-import com.hackaboss.Proyecto_1_Grupo_B.mapper.PedidoMapper;
 import com.hackaboss.Proyecto_1_Grupo_B.mapper.TerminalMapper;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Terminal;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.TerminalRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class TerminalService {
-    @Autowired
-    private TerminalRepository terminalRepository;
-
-    @Autowired
-    private TerminalMapper terminalMapper;
+    private final TerminalRepository terminalRepository;
+    private final TerminalMapper terminalMapper;
 
 
     public List<TerminalDto> listarTerminales() {

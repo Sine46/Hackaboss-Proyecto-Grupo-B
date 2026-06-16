@@ -4,21 +4,19 @@ import com.hackaboss.Proyecto_1_Grupo_B.dto.CategoriaDto;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.CategoriaNoEncontradaException;
 import com.hackaboss.Proyecto_1_Grupo_B.exception.DatosNoValidosException;
 import com.hackaboss.Proyecto_1_Grupo_B.mapper.CategoriaMapper;
-import com.hackaboss.Proyecto_1_Grupo_B.mapper.ProductoMapper;
 import com.hackaboss.Proyecto_1_Grupo_B.model.Categoria;
 import com.hackaboss.Proyecto_1_Grupo_B.repository.CategoriaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class CategoriaService {
-    @Autowired
-    private CategoriaRepository categoriaRepository;
+    private final CategoriaRepository categoriaRepository;
 
-    @Autowired
-    private CategoriaMapper categoriaMapper;
+    private final CategoriaMapper categoriaMapper;
 
     public List<CategoriaDto> listarCategorias() {
 
