@@ -44,10 +44,11 @@ VALUES (1, 'Caja 1'),
 -- ============================
 -- PEDIDOS
 -- ============================
-INSERT INTO pedido (id, terminal_id, precio_total, hora_pedido, estado)
-VALUES (1, 1, 11.49, '2026-04-10 12:00:00', 'CREADO'),
-       (2, 2, 15.49, '2026-04-10 13:00:00', 'EN_PREPARACION'),
-       (3, 1, 3.00, '2026-04-10 14:00:00', 'ENTREGADO');
+INSERT INTO pedido (id, codigo, terminal_id, precio_total, hora_pedido, estado)
+VALUES
+    (1, 'PED-A1B2C', 1, 11.49, '2026-04-10 12:00:00', 'CREADO'),
+    (2, 'PED-D4E5F', 2, 15.49, '2026-04-10 13:00:00', 'EN_PREPARACION'),
+    (3, 'PED-G7H8I', 1, 3.00, '2026-04-10 14:00:00', 'ENTREGADO');
 
 -- ============================
 -- PEDIDO_PRODUCTO
