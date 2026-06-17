@@ -167,13 +167,13 @@ public class PedidoService {
     }
     // generar codigo de pedido
     private String generarCodigo() {
-        return "COD-" + UUID.randomUUID().toString().substring(0, 5).toUpperCase();
+        return "PED-" + UUID.randomUUID().toString().replace("-","").substring(0, 5).toUpperCase();
     }
     // validaciones
     // pedido existente
     private Pedido pedidoExiste(Long id) {
         return pedidoRepository.findById(id)
-                .orElseThrow(() -> new PedidoNoEncontradoException(id))89'o0p';
+                .orElseThrow(() -> new PedidoNoEncontradoException(id));
     }
     private Pedido pedidoExiste(String codigo) {
         return pedidoRepository.findByCodigo(codigo)
