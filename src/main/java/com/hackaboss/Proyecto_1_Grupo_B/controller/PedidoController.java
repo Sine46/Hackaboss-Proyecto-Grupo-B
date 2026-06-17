@@ -51,6 +51,10 @@ public class PedidoController {
     public ResponseEntity<PedidoDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(pedidoService.findById(id));
     }
+    @GetMapping("/codigo/{codigo}")
+    public PedidoDto findByCodigo(@PathVariable String codigo) {
+        return pedidoService.findByCodigo(codigo);
+    }
 
     // listar pedidos
     @GetMapping

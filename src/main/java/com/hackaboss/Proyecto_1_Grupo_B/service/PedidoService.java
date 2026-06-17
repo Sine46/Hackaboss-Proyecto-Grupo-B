@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -33,10 +34,13 @@ public class PedidoService {
         Terminal terminal = terminalRepository.findById(dto.getTerminalId())
                 .orElseThrow(() -> new TerminalNoEncontradoException(dto.getTerminalId()));
         Pedido pedido = new Pedido();
+
+        pedido.setCodigo(generarCodigo());
         pedido.setTerminal(terminal);
         pedido.setEstado(Estado.CREADO);
         pedido.setHoraPedido(LocalDateTime.now());
         pedido.setPrecioTotal(0.0);
+
         Pedido guardado = pedidoRepository.save(pedido);
         return pedidoMapper.toDto(guardado);
     }
@@ -128,9 +132,19 @@ public class PedidoService {
         return pedidoMapper.toDto(pedidoRepository.save(pedido));
     }
 
-    // Find by id/codigo
+    // Find by id
     public PedidoDto findById(Long pedidoId) {
+
         Pedido pedido = pedidoExiste(pedidoId);
+
+        return pedidoMapper.toDto(pedido);
+    }
+
+    // Find by código
+    public PedidoDto findByCodigo(String codigo) {
+
+        Pedido pedido = pedidoExiste(codigo);
+
         return pedidoMapper.toDto(pedido);
     }
 
@@ -151,12 +165,18 @@ public class PedidoService {
                 .sum();
 
     }
-
+    // generar codigo de pedido
+    private String generarCodigo() {
+        return "COD-" + UUID.randomUUID().toString().substring(0, 5).toUpperCase();
+    }
     // validaciones
     // pedido existente
     private Pedido pedidoExiste(Long id) {
         return pedidoRepository.findById(id)
-                .orElseThrow(() -> new PedidoNoEncontradoException(id));
+                .orElseThrow(() -> new PedidoNoEncontradoException(id))89'o0p';
     }
-
+    private Pedido pedidoExiste(String codigo) {
+        return pedidoRepository.findByCodigo(codigo)
+                .orElseThrow(() -> new PedidoNoEncontradoException(codigo));
+    }
 }

@@ -28,4 +28,8 @@ public class Pedido {
 
     @Enumerated(EnumType.STRING)
     private Estado estado;
+
+    @Column(unique = true)
+    private String codigo;
+
 }
