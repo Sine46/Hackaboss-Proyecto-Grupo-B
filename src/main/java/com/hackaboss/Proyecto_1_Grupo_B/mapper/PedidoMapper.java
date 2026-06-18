@@ -13,6 +13,7 @@ public class PedidoMapper {
     public PedidoDto toDto(Pedido pedido) {
         PedidoDto dto = new PedidoDto();
         dto.setId(pedido.getId());
+        dto.setCodigo(pedido.getCodigo());
         dto.setPrecioTotal(pedido.getPrecioTotal());
         dto.setHoraPedido(pedido.getHoraPedido());
         dto.setProductos(
