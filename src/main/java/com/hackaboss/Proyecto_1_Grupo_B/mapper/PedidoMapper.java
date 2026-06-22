@@ -15,6 +15,7 @@ public class PedidoMapper {
         dto.setId(pedido.getId());
         dto.setPrecioTotal(pedido.getPrecioTotal());
         dto.setHoraPedido(pedido.getHoraPedido());
+        dto.setCodigo(pedido.getCodigo());
         dto.setProductos(
                 pedido.getPedidoProductos()
                         .stream()

@@ -14,6 +14,7 @@ public class ProductoMapper {
         dto.setNombre(producto.getNombre());
         dto.setPrecio(producto.getPrecio());
         dto.setCategoriaNombre(producto.getCategoria().getNombre());
+        dto.setStock(producto.getStock());
         return dto;
     }
 
