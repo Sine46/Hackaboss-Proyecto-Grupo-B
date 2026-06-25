@@ -1,5 +1,6 @@
 package com.hackaboss.Proyecto_1_Grupo_B.dto;
 
+import com.hackaboss.Proyecto_1_Grupo_B.model.Estado;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,5 +14,6 @@ public class PedidoDto {
     private String codigo;
     private List<PedidoProductoDto> productos;
     private double precioTotal;
+    private Estado estado;
     private LocalDateTime horaPedido;
 }

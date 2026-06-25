@@ -14,6 +14,7 @@ public class PedidoMapper {
         PedidoDto dto = new PedidoDto();
         dto.setId(pedido.getId());
         dto.setCodigo(pedido.getCodigo());
+        dto.setEstado(pedido.getEstado());
         dto.setPrecioTotal(pedido.getPrecioTotal());
         dto.setHoraPedido(pedido.getHoraPedido());
         dto.setProductos(
